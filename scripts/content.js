@@ -66,19 +66,55 @@ const domManipulation = (subjects) => {
     });
 }
 
+let unboxContainer, unboxBackdrop, unboxSlider, unboxItems = [];
+
+const initUnboxContainer = () => {
+    unboxContainer = document.createElement('div');
+    unboxContainer.classList.add('unbox-container');
+    unboxContainer.setAttribute('style', 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 9999;');
+
+    unboxBackdrop = document.createElement('div');
+    unboxBackdrop.classList.add('backdrop');
+    unboxBackdrop.setAttribute('style', 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5);');
+
+    unboxSlider = document.createElement('div');
+    unboxSlider.classList.add('slider');
+    unboxSlider.setAttribute('style', 'position: fixed; top: 50%; left: 0; transform: translate(0, -50%); width: 100%; height: 30%; display: flex;gap: 15px;');
+
+    for (let i = 0; i < 5; i++) {
+        unboxItems[i] = document.createElement('div');
+        unboxItems[i].classList.add('item');
+        unboxItems[i].setAttribute('style', 'background-color: black; width: 100%;');
+        unboxSlider.appendChild(unboxItems[i]);
+    }
+
+    const verticalLine = document.createElement('div');
+    verticalLine.classList.add('vertical-line');
+    verticalLine.setAttribute('style', 'position: fixed; top: 0; left: 50%; transform: translate(-50%, 0); width: 2px; height: 100%; background-color: yellow; box-shadow: 0 0 10px yellow;');
+    unboxSlider.appendChild(verticalLine);
+
+    unboxContainer.appendChild(unboxBackdrop);
+    unboxContainer.appendChild(unboxSlider);
+
+    document.body.appendChild(unboxContainer);
+}
+
 const main = async () => {
     getLocalStorage();
+
     const portalButton = document.querySelector('.portalModTd[title="Kết quả học tập"]');
     portalButton.addEventListener("click", () => {
-            const iframe1 = document.querySelector('iframe');
-            iframe1.addEventListener("load", () => {
-                const iframe2 = iframe1.contentWindow.document.querySelector('iframe');
-                iframe2.addEventListener("load", () => {
-                    // done iframe drilling (2 levels)
-                    const subjects = iframe2.contentWindow.document.querySelectorAll('#divList3 > table > tbody tr');
-                    domManipulation(subjects);
-                });
+        initUnboxContainer();
+
+        const iframe1 = document.querySelector('iframe');
+        iframe1.addEventListener("load", () => {
+            const iframe2 = iframe1.contentWindow.document.querySelector('iframe');
+            iframe2.addEventListener("load", () => {
+                // done iframe drilling (2 levels)
+                const subjects = iframe2.contentWindow.document.querySelectorAll('#divList3 > table > tbody tr');
+                domManipulation(subjects);
             });
+        });
     });
 }
 
