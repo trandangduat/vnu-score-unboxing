@@ -1,13 +1,33 @@
 const GRADES_START_COLUMN = 4;
 const GRADES_END_COLUMN = 8;
+let subjectsRevealedState = {};
+
+const getLocalStorage = () => {
+    if (localStorage.getItem('subjectsRevealedState')) {
+        subjectsRevealedState = JSON.parse(localStorage.getItem('subjectsRevealedState'));
+    }
+}
+
+const updateLocalStorage = () => {
+    localStorage.setItem('subjectsRevealedState', JSON.stringify(subjectsRevealedState));
+}
+
+const removeLocalStorage = () => {
+    localStorage.removeItem('subjectsRevealedState');
+}
 
 const showSubjectGrades = (subject, subjectGrades) => {
     const subjectGradesDOM = subject.querySelectorAll('td');
+    const subjectName = subjectGradesDOM[1].innerText;
+
+    subjectsRevealedState[subjectName] = true;
+    updateLocalStorage();
 
     for (let j = 0; j < subjectGradesDOM.length; j++) {
         subjectGradesDOM[j].style.backgroundColor = "white";
         subjectGradesDOM[j].innerHTML = subjectGrades[j];
     }
+
 }
 
 const hideSubjectGrades = (subject) => {
@@ -19,6 +39,13 @@ const hideSubjectGrades = (subject) => {
 
     for (let i = 0; i < subjectGradesDOM.length; i++) {
         subjectGrades.push(subjectGradesDOM[i].innerHTML);
+    }
+
+    const subjectName = subjectGradesDOM[1].innerText;
+
+    if (subjectsRevealedState[subjectName] === true) {
+        showSubjectGrades(subject, subjectGrades);
+        return;
     }
 
     for (let i = GRADES_START_COLUMN; i < GRADES_END_COLUMN; i++) {
@@ -40,6 +67,7 @@ const domManipulation = (subjects) => {
 }
 
 const main = async () => {
+    getLocalStorage();
     const portalButton = document.querySelector('.portalModTd[title="Kết quả học tập"]');
     portalButton.addEventListener("click", () => {
             const iframe1 = document.querySelector('iframe');
