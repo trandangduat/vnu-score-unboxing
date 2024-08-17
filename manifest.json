@@ -1,0 +1,19 @@
+{
+    "manifest_version": 3,
+    "name": "VNU Score Unboxing",
+    "description": "Reveal subject grade in Counter-strike unboxing style",
+    "version": "1.0",
+    "action": {
+        "default_popup": "popup/popup.html"
+    },
+    "content_scripts": [
+        {
+            "js": ["scripts/content.js"],
+            "matches": [
+                "https://daotao.vnu.edu.vn/*",
+                "https://daotao.vnu.edu.vn/ListPoint/listpoint.asp",
+                "https://daotao.vnu.edu.vn/ListPoint/listpoint_Brc1.asp"
+            ]
+        }
+    ]
+}
