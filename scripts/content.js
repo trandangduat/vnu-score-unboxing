@@ -1,31 +1,41 @@
+const GRADES_START_COLUMN = 4;
+const GRADES_END_COLUMN = 8;
+
+const showSubjectGrades = (subject, subjectGrades) => {
+    const subjectGradesDOM = subject.querySelectorAll('td');
+
+    for (let j = 0; j < subjectGradesDOM.length; j++) {
+        subjectGradesDOM[j].style.backgroundColor = "white";
+        subjectGradesDOM[j].innerHTML = subjectGrades[j];
+    }
+}
+
+const hideSubjectGrades = (subject) => {
+    const subjectGradesDOM = subject.querySelectorAll('td');
+    const subjectGrades = [];
+
+    if (subjectGradesDOM.length < 7)
+        return;
+
+    for (let i = 0; i < subjectGradesDOM.length; i++) {
+        subjectGrades.push(subjectGradesDOM[i].innerHTML);
+    }
+
+    for (let i = GRADES_START_COLUMN; i < GRADES_END_COLUMN; i++) {
+        subjectGradesDOM[i].style.backgroundColor = "#f0f0f0";
+        subjectGradesDOM[i].innerHTML = `<p style="cursor:pointer;">🔑 unlock</p>`;
+    }
+
+    for (let i = GRADES_START_COLUMN; i < GRADES_END_COLUMN; i++) {
+        subjectGradesDOM[i].addEventListener("click", () => {
+            showSubjectGrades(subject, subjectGrades);
+        });
+    }
+}
+
 const domManipulation = (subjects) => {
     subjects.forEach((subject) => {
-        const subjectInfoDOM = subject.querySelectorAll('td');
-        const subjectInfo = [];
-
-        if (subjectInfoDOM.length < 7)
-            return;
-
-        for (let i = 0; i < subjectInfoDOM.length; i++) {
-            subjectInfo.push(subjectInfoDOM[i].innerHTML);
-        }
-
-        for (let i = 4; i < 8; i++) {
-            subjectInfoDOM[i].style.backgroundColor = "#f0f0f0";
-            subjectInfoDOM[i].innerHTML = `<p style="cursor:pointer;">🔑 unlock</p>`;
-        }
-        for (let i = 4; i < 8; i++) {
-            subjectInfoDOM[i].addEventListener("click", () => {
-                for (let j = 4; j < 8; j++) {
-                    subjectInfoDOM[j].style.backgroundColor = "white";
-                    subjectInfoDOM[j].innerHTML = subjectInfo[j];
-                }
-            });
-        }
-
-        // const subjectName = subjectInfo[1].innerText;
-        // const subjectMark = subjectInfo[6].innerText;
-        // console.log(subjectName, subjectMark);
+        hideSubjectGrades(subject);
     });
 }
 
