@@ -66,7 +66,11 @@ const domManipulation = (subjects) => {
     });
 }
 
-let unboxContainer, unboxBackdrop, unboxSlider, unboxItems = [];
+let unboxContainer, unboxBackdrop, unboxSlider, unboxSegment1, unboxSegment2;
+let unboxItems1 = [], unboxItems2 = [];
+const UNBOX_SLIDER_ITEMS = 5;
+const UNBOX_SLIDER_ITEMS_GAP = 15;
+const SLIDER_DURATION = 5000;
 
 const initUnboxContainer = () => {
     unboxContainer = document.createElement('div');
@@ -79,13 +83,27 @@ const initUnboxContainer = () => {
 
     unboxSlider = document.createElement('div');
     unboxSlider.classList.add('slider');
-    unboxSlider.setAttribute('style', 'position: fixed; top: 50%; left: 0; transform: translate(0, -50%); width: 100%; height: 30%; display: flex;gap: 15px;');
+    unboxSlider.setAttribute('style', 'position: fixed; top: 50%; left: 0; transform: translate(0, -50%); width: 100%; height: 30%; overflow: hidden;');
 
-    for (let i = 0; i < 5; i++) {
-        unboxItems[i] = document.createElement('div');
-        unboxItems[i].classList.add('item');
-        unboxItems[i].setAttribute('style', 'background-color: black; width: 100%;');
-        unboxSlider.appendChild(unboxItems[i]);
+    unboxSegment1 = document.createElement('div');
+    unboxSegment1.setAttribute('style', `position: fixed; display: flex; gap: ${UNBOX_SLIDER_ITEMS_GAP}px; width: 100%; height: 100%; left: 0;`);
+    unboxSegment2 = document.createElement('div');
+    unboxSegment2.setAttribute('style', `position: fixed; display: flex; gap: ${UNBOX_SLIDER_ITEMS_GAP}px; width: 100%; height: 100%; left: calc(100% + ${UNBOX_SLIDER_ITEMS_GAP}px);`);
+    unboxSlider.appendChild(unboxSegment1);
+    unboxSlider.appendChild(unboxSegment2);
+
+    for (let i = 0; i < UNBOX_SLIDER_ITEMS; i++) {
+        unboxItems1[i] = document.createElement('div');
+        unboxItems1[i].classList.add('item');
+        unboxItems1[i].setAttribute('style', 'background-color: black; width: 100%;');
+        unboxSegment1.appendChild(unboxItems1[i]);
+    }
+
+    for (let i = 0; i < UNBOX_SLIDER_ITEMS; i++) {
+        unboxItems2[i] = document.createElement('div');
+        unboxItems2[i].classList.add('item');
+        unboxItems2[i].setAttribute('style', 'background-color: blue; width: 100%;');
+        unboxSegment2.appendChild(unboxItems2[i]);
     }
 
     const verticalLine = document.createElement('div');
@@ -99,12 +117,50 @@ const initUnboxContainer = () => {
     document.body.appendChild(unboxContainer);
 }
 
+const startUnboxSlider = () => {
+    let currentTime = 0;
+    let offset = 0;
+    let switchSegment = true;
+    const slideInterval = setInterval(() => {
+        for (let i = 0; i < UNBOX_SLIDER_ITEMS; i++) {
+            unboxItems1[i].style.transform = `translateX(-${offset}px)`;
+            unboxItems2[i].style.transform = `translateX(-${offset}px)`;
+        }
+        if (switchSegment && unboxItems2[0].getBoundingClientRect().left <= 0) {
+            console.log("gg")
+            unboxSegment1.style.left = `calc(100% + ${UNBOX_SLIDER_ITEMS_GAP}px)`;
+            unboxSegment2.style.left = `0px`;
+            for (let i = 0; i < UNBOX_SLIDER_ITEMS; i++) {
+                unboxItems2[i].style.transform = `translateX(0)`;
+                unboxItems1[i].style.transform = `translateX(0)`;
+            }
+            switchSegment = false;
+            offset = 0;
+        }
+        if (!switchSegment && unboxItems1[0].getBoundingClientRect().left <= 0) {
+            unboxSegment2.style.left = `calc(100% + ${UNBOX_SLIDER_ITEMS_GAP}px)`;
+            unboxSegment1.style.left = `0px`;
+            for (let i = 0; i < UNBOX_SLIDER_ITEMS; i++) {
+                unboxItems1[i].style.transform = `translateX(0)`;
+                unboxItems2[i].style.transform = `translateX(0)`;
+            }
+            offset = 0;
+            switchSegment = true;
+        }
+        offset += 16;
+        currentTime += 16;
+    }, 16);
+}
+
 const main = async () => {
     getLocalStorage();
 
     const portalButton = document.querySelector('.portalModTd[title="Kết quả học tập"]');
     portalButton.addEventListener("click", () => {
         initUnboxContainer();
+        setTimeout(() => {
+            startUnboxSlider();
+        }, 1000);
 
         const iframe1 = document.querySelector('iframe');
         iframe1.addEventListener("load", () => {
