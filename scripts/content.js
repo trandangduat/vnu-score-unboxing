@@ -93,6 +93,7 @@ const initUnboxContainer = () => {
         unboxItems1[i] = document.createElement('div');
         unboxItems1[i].classList.add('item');
         unboxItems1[i].setAttribute('style', 'background-color: black;');
+        unboxItems1[i].innerHTML = 'A';
         unboxSegment1.appendChild(unboxItems1[i]);
     }
 
@@ -114,6 +115,13 @@ const initUnboxContainer = () => {
 }
 
 const SLIDER_INITIAL_SPEED = 69;
+const SLIDER_ACCERALATION = SLIDER_INITIAL_SPEED / (SLIDER_DURATION / 16);
+
+// check if there is a possibility to switch to the next segment
+const checkRemainingSegmentSwitch = (currentSpeed, totalLength) => {
+    let k = currentSpeed / SLIDER_ACCERALATION;
+    return (totalLength - (k + 1) * currentSpeed + k * (k + 1) / 2 * SLIDER_ACCERALATION) > 0;
+}
 
 const startUnboxSlider = () => {
     let currentTime = 0;
@@ -125,7 +133,7 @@ const startUnboxSlider = () => {
             unboxItems1[i].style.transform = `translateX(-${offset}px)`;
             unboxItems2[i].style.transform = `translateX(-${offset}px)`;
         }
-        if (switchSegment && unboxItems2[0].getBoundingClientRect().left <= 0) {
+        if (switchSegment && unboxItems2[0].getBoundingClientRect().left <= unboxSlider.getBoundingClientRect().left) {
             unboxSegment1.style.left = `calc(100% + ${UNBOX_SLIDER_ITEMS_GAP}px)`;
             unboxSegment2.style.left = `0px`;
             for (let i = 0; i < UNBOX_SLIDER_ITEMS; i++) {
@@ -135,18 +143,22 @@ const startUnboxSlider = () => {
             switchSegment = false;
             offset = 0;
         }
-        if (!switchSegment && unboxItems1[0].getBoundingClientRect().left <= 0) {
+        if (!switchSegment && unboxItems1[0].getBoundingClientRect().left <= unboxSlider.getBoundingClientRect().left) {
             unboxSegment2.style.left = `calc(100% + ${UNBOX_SLIDER_ITEMS_GAP}px)`;
             unboxSegment1.style.left = `0px`;
             for (let i = 0; i < UNBOX_SLIDER_ITEMS; i++) {
                 unboxItems1[i].style.transform = `translateX(0)`;
                 unboxItems2[i].style.transform = `translateX(0)`;
             }
+            if (checkRemainingSegmentSwitch(speed, unboxSlider.getBoundingClientRect().width)) {
+                unboxItems2[0].innerHTML = 'GOLD';
+                console.log('GOLD');
+            }
             switchSegment = true;
             offset = 0;
         }
         offset += speed;
-        speed = speed - SLIDER_INITIAL_SPEED / (SLIDER_DURATION / 16);
+        speed = speed - SLIDER_ACCERALATION;
         currentTime += 16;
         if (currentTime >= SLIDER_DURATION) {
             clearInterval(slideInterval);
