@@ -9,6 +9,7 @@
     "content_scripts": [
         {
             "js": ["scripts/content.js"],
+            "css": ["styles/content.css"],
             "matches": [
                 "https://daotao.vnu.edu.vn/*",
                 "https://daotao.vnu.edu.vn/ListPoint/listpoint.asp",

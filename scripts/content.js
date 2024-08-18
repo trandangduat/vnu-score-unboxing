@@ -75,15 +75,12 @@ const SLIDER_DURATION = 5000;
 const initUnboxContainer = () => {
     unboxContainer = document.createElement('div');
     unboxContainer.classList.add('unbox-container');
-    unboxContainer.setAttribute('style', 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 9999;');
 
     unboxBackdrop = document.createElement('div');
     unboxBackdrop.classList.add('backdrop');
-    unboxBackdrop.setAttribute('style', 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5);');
 
     unboxSlider = document.createElement('div');
     unboxSlider.classList.add('slider');
-    unboxSlider.setAttribute('style', 'position: fixed; top: 50%; left: 0; transform: translate(0, -50%); width: 100%; height: 30%; overflow: hidden;');
 
     unboxSegment1 = document.createElement('div');
     unboxSegment1.setAttribute('style', `position: fixed; display: flex; gap: ${UNBOX_SLIDER_ITEMS_GAP}px; width: 100%; height: 100%; left: 0;`);
@@ -108,7 +105,6 @@ const initUnboxContainer = () => {
 
     const verticalLine = document.createElement('div');
     verticalLine.classList.add('vertical-line');
-    verticalLine.setAttribute('style', 'position: fixed; top: 0; left: 50%; transform: translate(-50%, 0); width: 2px; height: 100%; background-color: yellow; box-shadow: 0 0 10px yellow;');
     unboxSlider.appendChild(verticalLine);
 
     unboxContainer.appendChild(unboxBackdrop);
@@ -117,7 +113,7 @@ const initUnboxContainer = () => {
     document.body.appendChild(unboxContainer);
 }
 
-const SLIDER_INITIAL_SPEED = 80;
+const SLIDER_INITIAL_SPEED = 69;
 
 const startUnboxSlider = () => {
     let currentTime = 0;
