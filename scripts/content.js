@@ -92,14 +92,14 @@ const initUnboxContainer = () => {
     for (let i = 0; i < UNBOX_SLIDER_ITEMS; i++) {
         unboxItems1[i] = document.createElement('div');
         unboxItems1[i].classList.add('item');
-        unboxItems1[i].setAttribute('style', 'background-color: black; width: 100%;');
+        unboxItems1[i].setAttribute('style', 'background-color: black;');
         unboxSegment1.appendChild(unboxItems1[i]);
     }
 
     for (let i = 0; i < UNBOX_SLIDER_ITEMS; i++) {
         unboxItems2[i] = document.createElement('div');
         unboxItems2[i].classList.add('item');
-        unboxItems2[i].setAttribute('style', 'background-color: blue; width: 100%;');
+        unboxItems2[i].setAttribute('style', 'background-color: blue;');
         unboxSegment2.appendChild(unboxItems2[i]);
     }
 

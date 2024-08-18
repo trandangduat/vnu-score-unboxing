@@ -19,9 +19,9 @@
 .slider {
     position: fixed;
     top: 50%;
-    left: 0;
-    transform: translate(0, -50%);
-    width: 100%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100rem;
     height: 30%;
     overflow: hidden;
 }
@@ -35,4 +35,8 @@
     height: 100%;
     background-color: yellow;
     box-shadow: 0 0 10px yellow;
+}
+
+.slider .item {
+    width: 100%;
 }
