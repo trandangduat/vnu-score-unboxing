@@ -117,8 +117,11 @@ const initUnboxContainer = () => {
     document.body.appendChild(unboxContainer);
 }
 
+const SLIDER_INITIAL_SPEED = 80;
+
 const startUnboxSlider = () => {
     let currentTime = 0;
+    let speed = SLIDER_INITIAL_SPEED;
     let offset = 0;
     let switchSegment = true;
     const slideInterval = setInterval(() => {
@@ -127,7 +130,6 @@ const startUnboxSlider = () => {
             unboxItems2[i].style.transform = `translateX(-${offset}px)`;
         }
         if (switchSegment && unboxItems2[0].getBoundingClientRect().left <= 0) {
-            console.log("gg")
             unboxSegment1.style.left = `calc(100% + ${UNBOX_SLIDER_ITEMS_GAP}px)`;
             unboxSegment2.style.left = `0px`;
             for (let i = 0; i < UNBOX_SLIDER_ITEMS; i++) {
@@ -144,11 +146,15 @@ const startUnboxSlider = () => {
                 unboxItems1[i].style.transform = `translateX(0)`;
                 unboxItems2[i].style.transform = `translateX(0)`;
             }
-            offset = 0;
             switchSegment = true;
+            offset = 0;
         }
-        offset += 16;
+        offset += speed;
+        speed = speed - SLIDER_INITIAL_SPEED / (SLIDER_DURATION / 16);
         currentTime += 16;
+        if (currentTime >= SLIDER_DURATION) {
+            clearInterval(slideInterval);
+        }
     }, 16);
 }
 
@@ -156,6 +162,9 @@ const main = async () => {
     getLocalStorage();
 
     const portalButton = document.querySelector('.portalModTd[title="Kết quả học tập"]');
+    if (portalButton === null) {
+        return;
+    }
     portalButton.addEventListener("click", () => {
         initUnboxContainer();
         setTimeout(() => {
