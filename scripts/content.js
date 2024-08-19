@@ -91,6 +91,10 @@ const domManipulation = (subjects) => {
 
 const showUnboxContainer = (subjectName, subjectGrade) => {
     unboxContainer.style.display = 'block';
+    unboxSegment1.style.left = `0px`;
+    unboxSegment2.style.left = `calc(100% + ${UNBOX_SLIDER_ITEMS_GAP}px)`;
+    resetUnboxItems(unboxItems1);
+    resetUnboxItems(unboxItems2);
     setTimeout(() => {
         startUnboxSlider(subjectName, subjectGrade);
     }, 500);
@@ -98,6 +102,17 @@ const showUnboxContainer = (subjectName, subjectGrade) => {
 
 const hideUnboxContainer = () => {
     unboxContainer.style.display = 'none';
+}
+
+const resetUnboxItems = (items) => {
+    for (let i = 0; i < UNBOX_SLIDER_ITEMS; i++) {
+        unboxItems1[i].style.transform = `translateX(0)`;
+        unboxItems2[i].style.transform = `translateX(0)`;
+        const rand = getRand(0, NUMBER_OF_GRADES - 1);
+        items[i].classList.remove(...gradesClasses)
+        items[i].classList.add(gradesClasses[rand]);
+        items[i].innerText = gradesLetters[rand];
+    }
 }
 
 const initUnboxContainer = () => {
@@ -112,29 +127,30 @@ const initUnboxContainer = () => {
     unboxSlider.classList.add('slider');
 
     unboxSegment1 = document.createElement('div');
-    unboxSegment1.setAttribute('style', `position: fixed; display: flex; gap: ${UNBOX_SLIDER_ITEMS_GAP}px; width: 100%; height: 100%; left: 0;`);
+    unboxSegment1.classList.add('segment');
+    unboxSegment1.setAttribute('style', `gap: ${UNBOX_SLIDER_ITEMS_GAP}px; left: 0;`);
+
     unboxSegment2 = document.createElement('div');
-    unboxSegment2.setAttribute('style', `position: fixed; display: flex; gap: ${UNBOX_SLIDER_ITEMS_GAP}px; width: 100%; height: 100%; left: calc(100% + ${UNBOX_SLIDER_ITEMS_GAP}px);`);
+    unboxSegment2.classList.add('segment');
+    unboxSegment2.setAttribute('style', `gap: ${UNBOX_SLIDER_ITEMS_GAP}px; left: calc(100% + ${UNBOX_SLIDER_ITEMS_GAP}px);`);
+
     unboxSlider.appendChild(unboxSegment1);
     unboxSlider.appendChild(unboxSegment2);
 
     for (let i = 0; i < UNBOX_SLIDER_ITEMS; i++) {
         unboxItems1[i] = document.createElement('div');
         unboxItems1[i].classList.add('item');
-        const rand = getRand(0, NUMBER_OF_GRADES - 1);
-        unboxItems1[i].classList.add(gradesClasses[rand]);
-        unboxItems1[i].innerText = gradesLetters[rand];
         unboxSegment1.appendChild(unboxItems1[i]);
     }
 
     for (let i = 0; i < UNBOX_SLIDER_ITEMS; i++) {
         unboxItems2[i] = document.createElement('div');
         unboxItems2[i].classList.add('item');
-        const rand = getRand(0, NUMBER_OF_GRADES - 1);
-        unboxItems2[i].classList.add(gradesClasses[rand]);
-        unboxItems2[i].innerText = gradesLetters[rand];
         unboxSegment2.appendChild(unboxItems2[i]);
     }
+
+    resetUnboxItems(unboxItems1);
+    resetUnboxItems(unboxItems2);
 
     const verticalLine = document.createElement('div');
     verticalLine.classList.add('vertical-line');
@@ -166,20 +182,14 @@ const startUnboxSlider = (subjectName, subjectGrade) => {
         if (switchSegment && unboxItems2[0].getBoundingClientRect().left <= unboxSlider.getBoundingClientRect().left) {
             unboxSegment1.style.left = `calc(100% + ${UNBOX_SLIDER_ITEMS_GAP}px)`;
             unboxSegment2.style.left = `0px`;
-            for (let i = 0; i < UNBOX_SLIDER_ITEMS; i++) {
-                unboxItems2[i].style.transform = `translateX(0)`;
-                unboxItems1[i].style.transform = `translateX(0)`;
-            }
+            resetUnboxItems(unboxItems1);
             switchSegment = false;
             offset = 0;
         }
         if (!switchSegment && unboxItems1[0].getBoundingClientRect().left <= unboxSlider.getBoundingClientRect().left) {
             unboxSegment2.style.left = `calc(100% + ${UNBOX_SLIDER_ITEMS_GAP}px)`;
             unboxSegment1.style.left = `0px`;
-            for (let i = 0; i < UNBOX_SLIDER_ITEMS; i++) {
-                unboxItems1[i].style.transform = `translateX(0)`;
-                unboxItems2[i].style.transform = `translateX(0)`;
-            }
+            resetUnboxItems(unboxItems2);
             if (checkRemainingSegmentSwitch(speed, unboxSlider.getBoundingClientRect().width)) {
                 unboxItems2[0].innerHTML = 'GOLD';
                 console.log('GOLD');
