@@ -11,7 +11,7 @@ const gradesClasses = ['grade-a-plus', 'grade-a', 'grade-b-plus', 'grade-b', 'gr
 const gradesAppearanceOdds = [0.01, 0.02, 0.05, 0.1, 0.2, 0.3, 0.2, 0.1, 0.02];
 
 let subjectsRevealedState = {};
-let unboxContainer, unboxBackdrop, unboxSlider, unboxSegment1, unboxSegment2;
+let unboxContainer, unboxBackdrop, unboxSubject, unboxSlider, unboxSegment1, unboxSegment2;
 let unboxItems1 = [], unboxItems2 = [];
 
 const getRand = (l, r) => {
@@ -34,9 +34,9 @@ const removeLocalStorage = () => {
 
 const showSubjectGrades = (subject, subjectGrades) => {
     const subjectGradesDOM = subject.querySelectorAll('td');
-    const subjectName = subjectGrades[1];
+    const subjectCode = subjectGrades[1];
 
-    subjectsRevealedState[subjectName] = true;
+    subjectsRevealedState[subjectCode] = true;
     updateLocalStorage();
 
     for (let j = GRADES_START_COLUMN; j < GRADES_END_COLUMN; j++) {
@@ -58,9 +58,10 @@ const hideSubjectGrades = (subject) => {
         subjectGrades[i] = subjectGrades[i].replace(/&nbsp;/g, '');
     }
 
-    const subjectName = subjectGrades[1];
+    const subjectCode = subjectGrades[1];
+    const subjectName = subjectGrades[2];
 
-    if (subjectsRevealedState[subjectName] === true) {
+    if (subjectsRevealedState[subjectCode] === true) {
         showSubjectGrades(subject, subjectGrades);
         return;
     }
@@ -72,9 +73,9 @@ const hideSubjectGrades = (subject) => {
 
     for (let i = GRADES_START_COLUMN; i < GRADES_END_COLUMN; i++) {
         subjectGradesDOM[i].addEventListener("click", () => {
-            if (subjectsRevealedState[subjectName] === true)
+            if (subjectsRevealedState[subjectCode] === true)
                 return;
-            showUnboxContainer(subjectName, subjectGrades[5]);
+            showUnboxContainer(subjectCode, subjectName, subjectGrades[5]);
             setTimeout(() => {
                 alert("Congrats you have unlocked " + subjectName + " with grade " + subjectGrades[5]);
                 hideUnboxContainer();
@@ -90,8 +91,9 @@ const domManipulation = (subjects) => {
     });
 }
 
-const showUnboxContainer = (subjectName, subjectGrade) => {
+const showUnboxContainer = (subjectCode, subjectName, subjectGrade) => {
     unboxContainer.style.display = 'block';
+    unboxSubject.innerText = subjectName;
     unboxSegment1.style.left = `0px`;
     unboxSegment2.style.left = `calc(100% + ${UNBOX_SLIDER_ITEMS_GAP}px)`;
     resetUnboxItems(unboxItems1);
@@ -133,6 +135,10 @@ const initUnboxContainer = () => {
     unboxBackdrop = document.createElement('div');
     unboxBackdrop.classList.add('backdrop');
 
+    unboxSubject = document.createElement('div');
+    unboxSubject.classList.add('subject');
+    unboxSubject.innerText = '😭😭😭';
+
     unboxSlider = document.createElement('div');
     unboxSlider.classList.add('slider');
 
@@ -164,9 +170,11 @@ const initUnboxContainer = () => {
 
     const verticalLine = document.createElement('div');
     verticalLine.classList.add('vertical-line');
+
     unboxSlider.appendChild(verticalLine);
 
     unboxContainer.appendChild(unboxBackdrop);
+    unboxContainer.appendChild(unboxSubject);
     unboxContainer.appendChild(unboxSlider);
 
     document.body.appendChild(unboxContainer);
