@@ -5,10 +5,17 @@ const UNBOX_SLIDER_ITEMS_GAP = 15;
 const SLIDER_DURATION = 5000;
 const SLIDER_INITIAL_SPEED = 69;
 const SLIDER_ACCERALATION = SLIDER_INITIAL_SPEED / (SLIDER_DURATION / 16);
+const NUMBER_OF_GRADES = 9;
+const gradesLetters = ['A+', 'A', 'B+', 'B', 'C+', 'C', 'D+', 'D', 'F'];
+const gradesClasses = ['grade-a-plus', 'grade-a', 'grade-b-plus', 'grade-b', 'grade-c-plus', 'grade-c', 'grade-d-plus', 'grade-d', 'grade-f'];
 
 let subjectsRevealedState = {};
 let unboxContainer, unboxBackdrop, unboxSlider, unboxSegment1, unboxSegment2;
 let unboxItems1 = [], unboxItems2 = [];
+
+const getRand = (l, r) => {
+    return Math.floor(Math.random() * (r - l + 1) + l);
+}
 
 const getLocalStorage = () => {
     if (localStorage.getItem('subjectsRevealedState')) {
@@ -114,15 +121,18 @@ const initUnboxContainer = () => {
     for (let i = 0; i < UNBOX_SLIDER_ITEMS; i++) {
         unboxItems1[i] = document.createElement('div');
         unboxItems1[i].classList.add('item');
-        unboxItems1[i].setAttribute('style', 'background-color: black;');
-        unboxItems1[i].innerHTML = 'A';
+        const rand = getRand(0, NUMBER_OF_GRADES - 1);
+        unboxItems1[i].classList.add(gradesClasses[rand]);
+        unboxItems1[i].innerText = gradesLetters[rand];
         unboxSegment1.appendChild(unboxItems1[i]);
     }
 
     for (let i = 0; i < UNBOX_SLIDER_ITEMS; i++) {
         unboxItems2[i] = document.createElement('div');
         unboxItems2[i].classList.add('item');
-        unboxItems2[i].setAttribute('style', 'background-color: blue;');
+        const rand = getRand(0, NUMBER_OF_GRADES - 1);
+        unboxItems2[i].classList.add(gradesClasses[rand]);
+        unboxItems2[i].innerText = gradesLetters[rand];
         unboxSegment2.appendChild(unboxItems2[i]);
     }
 
