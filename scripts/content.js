@@ -8,6 +8,7 @@ const SLIDER_ACCERALATION = SLIDER_INITIAL_SPEED / (SLIDER_DURATION / 16);
 const NUMBER_OF_GRADES = 9;
 const gradesLetters = ['A+', 'A', 'B+', 'B', 'C+', 'C', 'D+', 'D', 'F'];
 const gradesClasses = ['grade-a-plus', 'grade-a', 'grade-b-plus', 'grade-b', 'grade-c-plus', 'grade-c', 'grade-d-plus', 'grade-d', 'grade-f'];
+const gradesAppearanceOdds = [0.01, 0.02, 0.05, 0.1, 0.2, 0.3, 0.2, 0.1, 0.02];
 
 let subjectsRevealedState = {};
 let unboxContainer, unboxBackdrop, unboxSlider, unboxSegment1, unboxSegment2;
@@ -108,7 +109,16 @@ const resetUnboxItems = (items) => {
     for (let i = 0; i < UNBOX_SLIDER_ITEMS; i++) {
         unboxItems1[i].style.transform = `translateX(0)`;
         unboxItems2[i].style.transform = `translateX(0)`;
-        const rand = getRand(0, NUMBER_OF_GRADES - 1);
+        // get grade based on appearance odds (could be optimized)
+        let rand = getRand(0, 100);
+        let sum = 0;
+        for (let j = 0; j < NUMBER_OF_GRADES; j++) {
+            sum += gradesAppearanceOdds[j] * 100;
+            if (rand <= sum) {
+                rand = j;
+                break;
+            }
+        }
         items[i].classList.remove(...gradesClasses)
         items[i].classList.add(gradesClasses[rand]);
         items[i].innerText = gradesLetters[rand];
