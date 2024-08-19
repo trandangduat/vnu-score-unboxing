@@ -1,6 +1,14 @@
 const GRADES_START_COLUMN = 4;
 const GRADES_END_COLUMN = 8;
+const UNBOX_SLIDER_ITEMS = 5;
+const UNBOX_SLIDER_ITEMS_GAP = 15;
+const SLIDER_DURATION = 5000;
+const SLIDER_INITIAL_SPEED = 69;
+const SLIDER_ACCERALATION = SLIDER_INITIAL_SPEED / (SLIDER_DURATION / 16);
+
 let subjectsRevealedState = {};
+let unboxContainer, unboxBackdrop, unboxSlider, unboxSegment1, unboxSegment2;
+let unboxItems1 = [], unboxItems2 = [];
 
 const getLocalStorage = () => {
     if (localStorage.getItem('subjectsRevealedState')) {
@@ -18,12 +26,12 @@ const removeLocalStorage = () => {
 
 const showSubjectGrades = (subject, subjectGrades) => {
     const subjectGradesDOM = subject.querySelectorAll('td');
-    const subjectName = subjectGradesDOM[1].innerText;
+    const subjectName = subjectGrades[1];
 
     subjectsRevealedState[subjectName] = true;
     updateLocalStorage();
 
-    for (let j = 0; j < subjectGradesDOM.length; j++) {
+    for (let j = GRADES_START_COLUMN; j < GRADES_END_COLUMN; j++) {
         subjectGradesDOM[j].style.backgroundColor = "white";
         subjectGradesDOM[j].innerHTML = subjectGrades[j];
     }
@@ -39,9 +47,10 @@ const hideSubjectGrades = (subject) => {
 
     for (let i = 0; i < subjectGradesDOM.length; i++) {
         subjectGrades.push(subjectGradesDOM[i].innerHTML);
+        subjectGrades[i] = subjectGrades[i].replace(/&nbsp;/g, '');
     }
 
-    const subjectName = subjectGradesDOM[1].innerText;
+    const subjectName = subjectGrades[1];
 
     if (subjectsRevealedState[subjectName] === true) {
         showSubjectGrades(subject, subjectGrades);
@@ -55,7 +64,14 @@ const hideSubjectGrades = (subject) => {
 
     for (let i = GRADES_START_COLUMN; i < GRADES_END_COLUMN; i++) {
         subjectGradesDOM[i].addEventListener("click", () => {
-            showSubjectGrades(subject, subjectGrades);
+            if (subjectsRevealedState[subjectName] === true)
+                return;
+            showUnboxContainer(subjectName, subjectGrades[6]);
+            setTimeout(() => {
+                alert("Congrats you have unlocked " + subjectName + " with grade " + subjectGrades[6]);
+                hideUnboxContainer();
+                showSubjectGrades(subject, subjectGrades);
+            }, SLIDER_DURATION + 800);
         });
     }
 }
@@ -66,15 +82,21 @@ const domManipulation = (subjects) => {
     });
 }
 
-let unboxContainer, unboxBackdrop, unboxSlider, unboxSegment1, unboxSegment2;
-let unboxItems1 = [], unboxItems2 = [];
-const UNBOX_SLIDER_ITEMS = 5;
-const UNBOX_SLIDER_ITEMS_GAP = 15;
-const SLIDER_DURATION = 5000;
+const showUnboxContainer = (subjectName, subjectGrade) => {
+    unboxContainer.style.display = 'block';
+    setTimeout(() => {
+        startUnboxSlider(subjectName, subjectGrade);
+    }, 500);
+}
+
+const hideUnboxContainer = () => {
+    unboxContainer.style.display = 'none';
+}
 
 const initUnboxContainer = () => {
     unboxContainer = document.createElement('div');
     unboxContainer.classList.add('unbox-container');
+    unboxContainer.style.display = 'none';
 
     unboxBackdrop = document.createElement('div');
     unboxBackdrop.classList.add('backdrop');
@@ -114,16 +136,14 @@ const initUnboxContainer = () => {
     document.body.appendChild(unboxContainer);
 }
 
-const SLIDER_INITIAL_SPEED = 69;
-const SLIDER_ACCERALATION = SLIDER_INITIAL_SPEED / (SLIDER_DURATION / 16);
-
 // check if there is a possibility to switch to the next segment
 const checkRemainingSegmentSwitch = (currentSpeed, totalLength) => {
     let k = currentSpeed / SLIDER_ACCERALATION;
     return (totalLength - (k + 1) * currentSpeed + k * (k + 1) / 2 * SLIDER_ACCERALATION) > 0;
 }
 
-const startUnboxSlider = () => {
+const startUnboxSlider = (subjectName, subjectGrade) => {
+    console.log('currently opening' + subjectName);
     let currentTime = 0;
     let speed = SLIDER_INITIAL_SPEED;
     let offset = 0;
@@ -175,9 +195,6 @@ const main = async () => {
     }
     portalButton.addEventListener("click", () => {
         initUnboxContainer();
-        setTimeout(() => {
-            startUnboxSlider();
-        }, 1000);
 
         const iframe1 = document.querySelector('iframe');
         iframe1.addEventListener("load", () => {
