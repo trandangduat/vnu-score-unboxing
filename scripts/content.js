@@ -73,9 +73,9 @@ const hideSubjectGrades = (subject) => {
         subjectGradesDOM[i].addEventListener("click", () => {
             if (subjectsRevealedState[subjectName] === true)
                 return;
-            showUnboxContainer(subjectName, subjectGrades[6]);
+            showUnboxContainer(subjectName, subjectGrades[5]);
             setTimeout(() => {
-                alert("Congrats you have unlocked " + subjectName + " with grade " + subjectGrades[6]);
+                alert("Congrats you have unlocked " + subjectName + " with grade " + subjectGrades[5]);
                 hideUnboxContainer();
                 showSubjectGrades(subject, subjectGrades);
             }, SLIDER_DURATION + 800);
@@ -96,7 +96,7 @@ const showUnboxContainer = (subjectName, subjectGrade) => {
     resetUnboxItems(unboxItems1);
     resetUnboxItems(unboxItems2);
     setTimeout(() => {
-        startUnboxSlider(subjectName, subjectGrade);
+        startUnboxSlider(subjectGrade);
     }, 500);
 }
 
@@ -168,8 +168,7 @@ const checkRemainingSegmentSwitch = (currentSpeed, totalLength) => {
     return (totalLength - (k + 1) * currentSpeed + k * (k + 1) / 2 * SLIDER_ACCERALATION) > 0;
 }
 
-const startUnboxSlider = (subjectName, subjectGrade) => {
-    console.log('currently opening' + subjectName);
+const startUnboxSlider = (subjectGrade) => {
     let currentTime = 0;
     let speed = SLIDER_INITIAL_SPEED;
     let offset = 0;
@@ -191,7 +190,9 @@ const startUnboxSlider = (subjectName, subjectGrade) => {
             unboxSegment1.style.left = `0px`;
             resetUnboxItems(unboxItems2);
             if (checkRemainingSegmentSwitch(speed, unboxSlider.getBoundingClientRect().width)) {
-                unboxItems2[0].innerHTML = 'GOLD';
+                unboxItems2[0].innerHTML = subjectGrade;
+                unboxItems2[0].classList.remove(...gradesClasses);
+                unboxItems2[0].classList.add(gradesClasses[gradesLetters.indexOf(subjectGrade)]);
                 console.log('GOLD');
             }
             switchSegment = true;
