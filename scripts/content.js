@@ -75,12 +75,14 @@ const hideSubjectGrades = (subject) => {
         subjectGradesDOM[i].addEventListener("click", () => {
             if (subjectsRevealedState[subjectCode] === true)
                 return;
+
             showUnboxContainer(subjectCode, subjectName, subjectGrades[5]);
+
             setTimeout(() => {
                 alert("Congrats you have unlocked " + subjectName + " with grade " + subjectGrades[5]);
                 hideUnboxContainer();
                 showSubjectGrades(subject, subjectGrades);
-            }, SLIDER_DURATION + 800);
+            }, SLIDER_DURATION + 500);
         });
     }
 }
@@ -91,6 +93,14 @@ const domManipulation = (subjects) => {
     });
 }
 
+const onAnimation = () => {
+    unboxSlider.style.height = '250px';
+}
+
+const offAnimation = () => {
+    unboxSlider.style.height = '0px';
+}
+
 const showUnboxContainer = (subjectCode, subjectName, subjectGrade) => {
     unboxContainer.style.display = 'block';
     unboxSubject.innerText = subjectName;
@@ -99,12 +109,16 @@ const showUnboxContainer = (subjectCode, subjectName, subjectGrade) => {
     resetUnboxItems(unboxItems1);
     resetUnboxItems(unboxItems2);
     setTimeout(() => {
+        onAnimation();
         startUnboxSlider(subjectGrade);
-    }, 500);
+    }, 200);
 }
 
 const hideUnboxContainer = () => {
-    unboxContainer.style.display = 'none';
+    offAnimation();
+    setTimeout(() => {
+        unboxContainer.style.display = 'none';
+    }, 250);
 }
 
 const resetUnboxItems = (items) => {
@@ -141,6 +155,8 @@ const initUnboxContainer = () => {
 
     unboxSlider = document.createElement('div');
     unboxSlider.classList.add('slider');
+    unboxSlider.style.height = '0px';
+    unboxSlider.style.transition = `height 250ms ease-out`;
 
     unboxSegment1 = document.createElement('div');
     unboxSegment1.classList.add('segment');
