@@ -213,6 +213,9 @@ const startUnboxSlider = (subjectGrade) => {
             unboxItems2[i].style.transform = `translateX(-${offset}px)`;
         }
         if (switchSegment && unboxItems2[0].getBoundingClientRect().left <= unboxSlider.getBoundingClientRect().left) {
+            // const diff = unboxItems2[0].getBoundingClientRect().left - unboxSlider.getBoundingClientRect().left;
+            // unboxSegment1.style.left = `calc(100% + ${UNBOX_SLIDER_ITEMS_GAP}px + ${diff}px)`;
+            // unboxSegment2.style.left = `${diff}px`;
             unboxSegment1.style.left = `calc(100% + ${UNBOX_SLIDER_ITEMS_GAP}px)`;
             unboxSegment2.style.left = `0px`;
             resetUnboxItems(unboxItems1);
@@ -220,17 +223,21 @@ const startUnboxSlider = (subjectGrade) => {
             offset = 0;
         }
         if (!switchSegment && unboxItems1[0].getBoundingClientRect().left <= unboxSlider.getBoundingClientRect().left) {
+            // const diff = unboxItems1[0].getBoundingClientRect().left - unboxSlider.getBoundingClientRect().left;
+            // unboxSegment2.style.left = `calc(100% + ${UNBOX_SLIDER_ITEMS_GAP}px + ${diff}px)`;
+            // unboxSegment1.style.left = `${diff}px`;
             unboxSegment2.style.left = `calc(100% + ${UNBOX_SLIDER_ITEMS_GAP}px)`;
             unboxSegment1.style.left = `0px`;
             resetUnboxItems(unboxItems2);
+            switchSegment = true;
+            offset = 0;
+
             if (checkRemainingSegmentSwitch(speed, unboxSlider.getBoundingClientRect().width)) {
                 unboxItems2[0].innerHTML = subjectGrade;
                 unboxItems2[0].classList.remove(...gradesClasses);
                 unboxItems2[0].classList.add(gradesClasses[gradesLetters.indexOf(subjectGrade)]);
                 console.log('GOLD');
             }
-            switchSegment = true;
-            offset = 0;
         }
         offset += speed;
         speed = speed - SLIDER_ACCERALATION;
