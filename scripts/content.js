@@ -10,6 +10,9 @@ const gradesLetters = ['A+', 'A', 'B+', 'B', 'C+', 'C', 'D+', 'D', 'F'];
 const gradesClasses = ['grade-a-plus', 'grade-a', 'grade-b-plus', 'grade-b', 'grade-c-plus', 'grade-c', 'grade-d-plus', 'grade-d', 'grade-f'];
 const gradesAppearanceOdds = [0.01, 0.02, 0.05, 0.1, 0.2, 0.3, 0.2, 0.1, 0.02];
 
+const buttonClickSound = new Audio(chrome.runtime.getURL("/assets/button_click.wav"));
+const sliderSound = new Audio(chrome.runtime.getURL("/assets/unboxing.wav"));
+
 let subjectsRevealedState = {};
 let unboxContainer, unboxBackdrop, unboxSubject, unboxSlider, unboxSegment1, unboxSegment2;
 let unboxItems1 = [], unboxItems2 = [];
@@ -76,6 +79,7 @@ const hideSubjectGrades = (subject) => {
             if (subjectsRevealedState[subjectCode] === true)
                 return;
 
+            buttonClickSound.play();
             showUnboxContainer(subjectCode, subjectName, subjectGrades[5]);
 
             setTimeout(() => {
@@ -108,6 +112,7 @@ const showUnboxContainer = (subjectCode, subjectName, subjectGrade) => {
     unboxSegment2.style.left = `calc(100% + ${UNBOX_SLIDER_ITEMS_GAP}px)`;
     resetUnboxItems(unboxItems1);
     resetUnboxItems(unboxItems2);
+    sliderSound.play();
     setTimeout(() => {
         onAnimation();
         startUnboxSlider(subjectGrade);

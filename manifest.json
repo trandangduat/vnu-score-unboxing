@@ -16,5 +16,11 @@
                 "https://daotao.vnu.edu.vn/ListPoint/listpoint_Brc1.asp"
             ]
         }
+    ],
+    "web_accessible_resources": [
+        {
+            "resources": ["assets/*"],
+            "matches": ["https://daotao.vnu.edu.vn/*"]
+        }
     ]
 }
