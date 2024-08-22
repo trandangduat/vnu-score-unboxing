@@ -14,6 +14,7 @@ const gradesColors = ['rgba(255, 215, 0, 0.5)', 'rgba(0, 128, 0, 0.4)', 'rgba(21
 const buttonClickSound = new Audio(chrome.runtime.getURL("/assets/button_click.wav"));
 const sliderSound = new Audio(chrome.runtime.getURL("/assets/unboxing.wav"));
 
+let subjects;
 let subjectsRevealedState = {};
 let unboxContainer, unboxBackdrop, unboxSubject, unboxSlider, unboxSegment1, unboxSegment2;
 let unboxItems1 = [], unboxItems2 = [];
@@ -98,7 +99,7 @@ const hideSubjectGrades = (subject) => {
     }
 }
 
-const domManipulation = (subjects) => {
+const domManipulation = () => {
     subjects.forEach((subject) => {
         hideSubjectGrades(subject);
     });
@@ -275,8 +276,8 @@ const main = async () => {
             const iframe2 = iframe1.contentWindow.document.querySelector('iframe');
             iframe2.addEventListener("load", () => {
                 // done iframe drilling (2 levels)
-                const subjects = iframe2.contentWindow.document.querySelectorAll('#divList3 > table > tbody tr');
-                domManipulation(subjects);
+                subjects = iframe2.contentWindow.document.querySelectorAll('#divList3 > table > tbody tr');
+                domManipulation();
             });
         });
     });
@@ -285,10 +286,22 @@ const main = async () => {
         chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             if (message.type === 'ACTION') {
                 if (message.payload === 'SHOW') {
-                    console.log("showwwww");
-                } else if (message.payload === 'HIDE') {
-                    console.log("hideeeee");
+                    subjects.forEach((subject) => {
+                        const subjectGradesDOM = subject.querySelectorAll('td');
+                        const subjectGrades = [];
+                        if (subjectGradesDOM.length < 7)
+                            return;
+                        for (let i = 0; i < subjectGradesDOM.length; i++) {
+                            subjectGrades.push(subjectGradesDOM[i].innerHTML);
+                            subjectGrades[i] = subjectGrades[i].replace(/&nbsp;/g, '');
+                        }
+                        showSubjectGrades(subject, subjectGrades);
+                    });
                 }
+                else if (message.payload === 'HIDE') {
+                    localStorage.removeItem('subjectsRevealedState');
+                }
+                location.reload();
             }
         });
     })();
