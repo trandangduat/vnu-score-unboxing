@@ -1,0 +1,14 @@
+body {
+    min-width: 200px;
+}
+
+#action {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.btn {
+    padding: 10px;
+}

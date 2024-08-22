@@ -280,6 +280,18 @@ const main = async () => {
             });
         });
     });
+
+    const receiveUserActions = (() => {
+        chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+            if (message.type === 'ACTION') {
+                if (message.payload === 'SHOW') {
+                    console.log("showwwww");
+                } else if (message.payload === 'HIDE') {
+                    console.log("hideeeee");
+                }
+            }
+        });
+    })();
 }
 
 main();
