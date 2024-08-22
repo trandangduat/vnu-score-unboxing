@@ -9,7 +9,7 @@ const NUMBER_OF_GRADES = 9;
 const gradesLetters = ['A+', 'A', 'B+', 'B', 'C+', 'C', 'D+', 'D', 'F'];
 const gradesClasses = ['grade-a-plus', 'grade-a', 'grade-b-plus', 'grade-b', 'grade-c-plus', 'grade-c', 'grade-d-plus', 'grade-d', 'grade-f'];
 const gradesAppearanceOdds = [0.01, 0.02, 0.05, 0.1, 0.2, 0.3, 0.2, 0.1, 0.02];
-const gradesColors = ['rgba(255, 215, 0, 0.5)', 'rgba(0, 128, 0, 0.4)', 'rgba(211, 44, 230, 0.4)', 'rgba(128, 0, 128, 0.4)', 'rgba(75, 105, 205, 0.4)', 'rgba(94, 152, 217, 0.4)', 'rgba(129, 140, 154, 0.4)', 'rgba(129, 140, 154, 0.4)', 'rgba(134, 134, 134, 0.4)'];
+const gradesColors = ['rgba(255, 215, 0, 0.5)', 'rgba(255, 0, 0, 0.4)', 'rgba(211, 44, 230, 0.4)', 'rgba(128, 0, 128, 0.4)', 'rgba(75, 105, 205, 0.4)', 'rgba(94, 152, 217, 0.4)', 'rgba(129, 140, 154, 0.4)', 'rgba(129, 140, 154, 0.4)', 'rgba(134, 134, 134, 0.4)'];
 
 const buttonClickSound = new Audio(chrome.runtime.getURL("/assets/button_click.wav"));
 const sliderSound = new Audio(chrome.runtime.getURL("/assets/unboxing.wav"));
